@@ -1,0 +1,345 @@
+﻿@model kanban.ViewModel.Task
+@{
+    Layout = null;
+}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+
+
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #ffffff;
+        color: white;
+    }
+
+    .modal-body {
+        padding: 2px 16px;
+    }
+
+    .modal-footer {
+        padding: 2px 16px;
+        background-color: #ffffff;
+        color: white;
+    }
+</style>
+
+
+<html>
+
+<head>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/jqx.base.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/ModalPopupWindow.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jqxcore.js"></script>
+    <script src="~/Scripts/jqxsortable.js"></script>
+    <script src="~/Scripts/jqxkanban.js"></script>
+    <script src="~/Scripts/jqxdata.js"></script>
+    <script type="text/javascript">
+        var h = new Array();
+        var source;
+        $(document).ready(function () {
+            $.ajax({
+
+                url: 'About',
+                type: 'GET',
+                data: JSON,
+                success: function (data) {
+                    mg(data);
+                },
+            });
+            function mg(data) {
+
+                var fields = [
+                    { name: "id", type: "number" },
+                    { name: "status", map: "state", type: "string" },
+                    { name: "text", map: "label", type: "string" },
+                    { name: "tags", type: "string" },
+                    { name: "color", map: "hex", type: "string" },
+                    { name: "resourceId", type: "number" }
+                ];
+
+                debugger;
+
+                var k = 0;
+                var tct = " ";
+
+
+                //h[k] = [{ id: this.taskId, state: "new", label: this.taskName, tags: "orders, combine", hex: "#5dc3f0", resourceId: 3 }];
+
+
+
+                var i = 0;
+
+                //{
+                //    localdata[i] = [{ id: data[i].id, state: "new", label: data[i].name, tags: "orders, combine", hex: "#5dc3f0", resourceId: 3 }]
+                //}
+                var localdata = [];
+                for (i = 0; i < data.length; i++) {
+                    localdata[i] = ({ id: data[i].taskId, state:"",label: data[i].taskName, tags: "orders, combine", hex: "#5dc3f0", resourceId: 3 })
+
+                }
+                console.log(localdata);
+                source = {
+                    localData: localdata,
+
+                    dataType: "array",
+                    dataFields: fields
+                }
+                //{
+                //localData: [{ id: data[i].taskId, state: "new", label: data[i].taskName, tags: "orders, combine", hex: "#5dc3f0", resourceId: 3 }],
+                //    //$.each(data, function (item, index) {
+
+
+                //    //}),
+                //    dataType: "array",
+                //    dataFields: fields
+                //};
+                //}
+
+                var dataAdapter = new $.jqx.dataAdapter(source);
+                var resourcesAdapterFunc = function () {
+                    var resourcesSource =
+                        {
+                            localData: [
+                                { id: 0, name: "No name", image: "../images/common.png", common: true },
+                                { id: 1, name: "Andrew Fuller", image: "../images/andrew.jpg", r: 2 },
+                                { id: 2, name: "Janet Leverling", image: "../images/janet.png", r: 2 },
+                                { id: 3, name: "Steven Buchanan", image: "../images/steven.png", r: 2 },
+                                { id: 4, name: "Nancy Davolio", image: "../images/nancy.png", r: 2 },
+                                { id: 5, name: "Michael Buchanan", image: "../images/Michael.png", r: 2 },
+                                { id: 6, name: "Margaret Buchanan", image: "../images/margaret.png", r: 2 },
+                                { id: 7, name: "Robert Buchanan", image: "../images/robert.png", r: 2 },
+                                { id: 8, name: "Laura Buchanan", image: "../images/Laura.png", r: 2 },
+                                { id: 9, name: "Laura Buchanan", image: "../images/andrew.jpg", r: 2 }
+                            ],
+                            dataType: "array",
+                            dataFields: [
+                                { name: "id", type: "number" },
+                                { name: "name", type: "string" },
+                                { name: "image", type: "string" },
+                                { name: "common", type: "boolean" },
+                                { name: "r", type: "number" }
+
+                            ]
+                        };
+
+                    var resourcesDataAdapter = new $.jqx.dataAdapter(resourcesSource);
+                    return resourcesDataAdapter;
+                }
+                $('#kanban').jqxKanban({
+                    width: "100%",
+                    resources: resourcesAdapterFunc(),
+                    source: dataAdapter,
+                    itemRenderer: function (item, data, resource) {
+
+                      
+
+
+                        item.on('dblclick', function (event) {
+                            //modalWin = new CreateModalPopUpObject();
+                            //modalWin.ShowURL("About.cshtml", 320, 470, 'UserEnrollment',   null);
+                            console.log(item.columns)
+                            showModalPopUp();
+                            var popUpObj;
+
+                            function showModalPopUp() {
+                                //var id1 = $(data.id).val();
+                                $.ajax({
+
+                                    url: '@Url.Action("Add", "Home")',
+                                    type: 'get',
+                                    data: {
+                                        id: data.id
+                                    },
+                                        success: function () {
+
+                                    }
+
+
+                                }).done(function (result) {
+
+                                    $('#bo').html(result);
+
+                                    });
+                               
+                                //var t = null;
+                                @*var link = @Html.Action("Add","Home",new { id = "-1" });
+                                link = link.replace("-1", data.id);*@
+
+                                @*var myUrl = '@Url.Action("Add", "Home")/' + data.id;*@
+                                    //if (t == null) {
+                                // t = data.id;
+
+                                    //}
+                                    //else {
+
+                                    //    //modal popuop code
+
+                                    //}
+                                    //Url.Action("Add","Home", new RouteValueDictionary(new { id = data.id }));
+                                    //console.log(data.id);
+
+                                    //var t = item.name;
+                                    //window.alert(data.id);
+                                    //    popUpObj = window.open("PopUp.htm",
+
+                                    //        "ModalPopUp",
+
+                                    //        "toolbar=no," +
+
+                                    //        "scrollbars=no," +
+
+                                    //        "location=no," +
+
+                                    //        "statusbar=no," +
+
+                                    //        "menubar=no," +
+
+                                    //        "resizable=0," +
+
+                                    //        "width=100," +
+
+                                    //        "height=100," +
+
+                                    //        "left = 490," +
+
+                                    //        "top=300"
+
+                                    //    );
+
+                                    //    popUpObj.focus();
+
+                                    //    LoadModalDiv();
+
+                                    //}
+                                    //function LoadModalDiv() {
+
+                                    //    var bcgDiv = document.getElementById("divBackground");
+
+                                    //    bcgDiv.style.display = "block";
+
+                                    //}
+
+
+                                    //    var bcgDiv = document.getElementById("divBackground");
+
+                                    //    bcgDiv.style.display = "none";
+
+
+                                    var modal = document.getElementById('myModal');
+                                    modal.style.display = "block";
+                                var span = document.getElementsByClassName("close")[0];
+
+                                    span.onclick = function () {
+                                        modal.style.display = "none";
+                                    }
+
+                                    window.onclick = function (event) {
+                                        if (event.target == modal) {
+                                        modal.style.display = "none";
+                                    }
+                                    }
+
+                            }
+
+                        });
+                    },
+                    columns: [
+                        { text: "To Do", dataField: "new" },
+                        { text: "Reviewed", dataField: "" },
+                        { text: "In Progress", dataField: "work" },
+                        { text: "In Git(Ready for Release)", dataField: "" },
+                        { text: "In Dev(For Developers)", dataField: "" },
+                        { text: "In Dev(Tested)", dataField: "" },
+                        { text: "In QA(For Testers)", dataField: "" },
+                        { text: "In QA(Tested)", dataField: "" },
+                        { text: "In QA(For Testers)", dataField: "" },
+                        { text: "In Live", dataField: "" },
+                        { text: "Done", dataField: "done" }
+                    ]
+                    
+
+                });
+                //}
+            }
+            });
+
+    </script>
+
+</head>
+<body>
+    <div id='kanban' style="width:100%"></div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2 style="color:black">Edit Task</h2>
+            </div>
+            <div class="modal-body" id="bo">
+
+                
+
+            </div>
+            <div class="modal-footer">
+                @*<input type="button" onclick="Add()" value="Add" style="height: 30px;
+                    width: 100px;">*@
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
